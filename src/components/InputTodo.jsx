@@ -13,7 +13,8 @@ function InputTodo() {
       value: input,
       status: false
     }
-    dispatch(addTodo(newTodo))
+    dispatch(addTodo(newTodo));
+    setInput("");
   }
 
   return (
