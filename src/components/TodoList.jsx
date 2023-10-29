@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteTodo, getTodo, updateTodo } from "../redux/reducers/todo-reducer";
+import {
+  deleteTodo,
+  getTodo,
+  updateTodo,
+} from "../redux/reducers/todo-reducer";
 
 function TodoList() {
   const dispatch = useDispatch();
@@ -9,10 +13,11 @@ function TodoList() {
   const [editId, setEditId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
-    dispatch(getTodo());
-  }, []);
+    dispatch(getTodo(activeFilter));
+  }, [activeFilter]);
 
   const handleDelete = (id) => {
     dispatch(deleteTodo(id));
@@ -23,7 +28,7 @@ function TodoList() {
     setEditValue(value);
     setIsEditing(true);
   };
-  
+
   const handleSaveEdit = (id) => {
     dispatch(updateTodo(id, editValue));
     setEditId(null);
@@ -32,7 +37,7 @@ function TodoList() {
   };
 
   const handleToggleCheck = (id, value, checked) => {
-    const newChecked = !checked; 
+    const newChecked = !checked;
     dispatch(updateTodo(id, value, newChecked));
   };
 
@@ -54,27 +59,35 @@ function TodoList() {
               </div>
             ) : (
               <div>
-        <input
-          type="checkbox"
-          checked={todo.checked}
-          onChange={() => handleToggleCheck(todo.id, todo.value, todo.checked)}
-        />
-              <span style={{ textDecoration: todo.checked ? "line-through" : "none" }}>
-          {todo.value}
-        </span>
-             {!isEditing && (
-          <>
-            <button onClick={() => handleEdit(todo.id, todo.value)}>✏️</button>
-            <button onClick={() => handleDelete(todo.id)}>❌</button>
-            </>
+                <input
+                  type="checkbox"
+                  checked={todo.checked}
+                  onChange={() =>
+                    handleToggleCheck(todo.id, todo.value, todo.checked)
+                  }
+                />
+                <span
+                  style={{
+                    textDecoration: todo.checked ? "line-through" : "none",
+                  }}
+                >
+                  {todo.value}
+                </span>
+                {!isEditing && (
+                  <>
+                    <button onClick={() => handleEdit(todo.id, todo.value)}>
+                      ✏️
+                    </button>
+                    <button onClick={() => handleDelete(todo.id)}>❌</button>
+                  </>
+                )}
+              </div>
             )}
-            </div>
-          )}
-        </div>
-      ))
-    )}
-  </div>
-);
+          </div>
+        ))
+      )}
+    </div>
+  );
 }
 
 export default TodoList;

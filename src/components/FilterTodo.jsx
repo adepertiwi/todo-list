@@ -1,8 +1,11 @@
-import React from "react";
+import { useDispatch } from "react-redux";
+import { setFilter } from "../redux/reducers/todo-reducer";
 
-function FilterTodo({ activeFilter, setActiveFilter }) {
+function FilterTodo() {
+  const dispatch = useDispatch();
+
   const handleFilterClick = (filter) => {
-    setActiveFilter(filter);
+    dispatch(setFilter(filter));
   };
 
   return (
@@ -10,9 +13,7 @@ function FilterTodo({ activeFilter, setActiveFilter }) {
       <div>
         <button onClick={() => handleFilterClick("all")}>All</button>
         <button onClick={() => handleFilterClick("active")}>Active</button>
-        <button onClick={() => handleFilterClick("completed")}>
-          Completed
-        </button>
+        <button onClick={() => handleFilterClick("completed")}>Completed</button>
       </div>
     </div>
   );

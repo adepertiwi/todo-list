@@ -32,13 +32,23 @@ function todoReducer(state = initialValue, action) {
     case "update_todo_success":
       const updatedTodos = state.todos.map((todo) => {
         if (todo.id === action.payload.id) {
-          return { ...todo, value: action.payload.value, checked: action.payload.checked };
+          return {
+            ...todo,
+            value: action.payload.value,
+            checked: action.payload.checked,
+          };
         }
         return todo;
       });
       return {
         ...state,
         todos: updatedTodos,
+      };
+      
+      case "set_filter": 
+      return {
+        ...state,
+        activeFilter: action.payload,
       };
 
     default:
@@ -87,13 +97,18 @@ export const deleteTodo = (data) => async (dispatch) => {
   dispatch(getTodo());
 };
 
-export function getTodo() {
+export function getTodo(activeFilter) {
   return async function (dispatch) {
     dispatch(startFetching());
 
-    const { data } = await axios(
-      "https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list"
-    );
+    let url = `https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list`;
+    if (activeFilter === "active") {
+      url += "?checked=false";
+    } else if (activeFilter === "completed") {
+      url += "?checked=true";
+    }
+
+    const { data } = await axios(url);
 
     dispatch(successGetTodo(data));
   };
@@ -117,5 +132,12 @@ export function updateTodoSuccess(id, value) {
     payload: { id, value },
   };
 }
+
+export const setFilter = (filter) => {
+  return {
+    type: "set_filter",
+    payload: filter,
+  };
+};
 
 export default todoReducer;
