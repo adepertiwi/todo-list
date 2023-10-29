@@ -7,8 +7,8 @@ function App() {
   const [activeFilter, setActiveFilter] = useState("all");
 
   return (
-    <div>
-      <h1>What's the plan for today?</h1>
+    <div className="justify-center items-centre">
+      <h1 className="mb-6 font-bold text-2xl">What's the plan for today?</h1>
       <InputTodo />
       <FilterTodo />
       <TodoList activeFilter={activeFilter} />

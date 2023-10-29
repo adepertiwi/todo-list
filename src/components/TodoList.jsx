@@ -44,22 +44,32 @@ function TodoList() {
   return (
     <div>
       {isLoading ? (
-        <div>loading...</div>
+        <div className="text-l text-gray-600">loading...</div>
       ) : (
         todos.map((todo) => (
-          <div key={todo.id}>
+          <div
+            key={todo.id}
+            className="w-1/2 mb-2 p-2 bg-white rounded-lg shadow-sm"
+          >
             {editId === todo.id ? (
-              <div>
+              <div className="flex items-center space-x-2">
                 <input
+                  className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-300"
                   type="text"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                 />
-                <button onClick={() => handleSaveEdit(todo.id)}>✅</button>
+                <button
+                  className="px-3 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none"
+                  onClick={() => handleSaveEdit(todo.id)}
+                >
+                  ✅
+                </button>
               </div>
             ) : (
-              <div>
+              <div className="flex space-x-4">
                 <input
+                className="flex-none"
                   type="checkbox"
                   checked={todo.checked}
                   onChange={() =>
@@ -67,19 +77,27 @@ function TodoList() {
                   }
                 />
                 <span
-                  style={{
-                    textDecoration: todo.checked ? "line-through" : "none",
-                  }}
+                  className={`flex-1 w-100 text-lg ${
+                    todo.status ? "line-through text-gray-400" : ""
+                  }`}
                 >
                   {todo.value}
                 </span>
                 {!isEditing && (
-                  <>
-                    <button onClick={() => handleEdit(todo.id, todo.value)}>
+                  <div className="flex-none space-x-2">
+                    <button
+                      className="text-blue-500 hover:underline focus:outline-none"
+                      onClick={() => handleEdit(todo.id, todo.value)}
+                    >
                       ✏️
                     </button>
-                    <button onClick={() => handleDelete(todo.id)}>❌</button>
-                  </>
+                    <button
+                      className="text-red-500 hover:underline focus:outline-none"
+                      onClick={() => handleDelete(todo.id)}
+                    >
+                      ❌
+                    </button>
+                  </div>
                 )}
               </div>
             )}
