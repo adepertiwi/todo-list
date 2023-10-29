@@ -4,13 +4,16 @@ import { addTodo } from "../redux/reducers/todo-reducer";
 
 function InputTodo() {
   const dispatch = useDispatch()
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState("")
 
   const handleClick = (e) => {
     e.preventDefault()
     console.log(input);
-    dispatch(addTodo(input))
-    setInput("")
+    let newTodo ={
+      value: input,
+      status: false
+    }
+    dispatch(addTodo(newTodo))
   }
 
   return (

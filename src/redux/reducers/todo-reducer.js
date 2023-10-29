@@ -1,47 +1,89 @@
-const initialState = {
-  todos: [
-    { id: 1, value: "belajar react" },
-    { id: 2, value: "belajar redux" },
-  ],
+import axios from "axios";
+
+const initialValue = {
+  todos: [],
+  isLoading: false,
+  error: "",
 };
 
-function todoReducer(state = initialState, action) {
+function todoReducer(state = initialValue, action) {
   switch (action.type) {
-    case "add_todo":
-      const newTodo = {
-        id: Date.now(),
-        value: action.payload,
-      };
-
-      const cloneTodos = [...state.todos, newTodo];
-
-      return {
-        todos: cloneTodos,
-      };
-
-    case "delete_todo":
+    case "delete_todo_success":
       const filterTodo = state.todos.filter(
-        (item) => item.id != action.payload
+        (item) => item.id !== action.payload
       );
       return {
+        ...state,
         todos: filterTodo,
+      };
+
+    case "start_fetching":
+      return {
+        ...state,
+        isLoading: true,
+      };
+
+    case "success_get_todo":
+      return {
+        ...state,
+        isLoading: false,
+        todos: action.payload,
       };
     default:
       return state;
   }
 }
 
-export function addTodo(input) {
+function startFetching() {
   return {
-    type: "add_todo",
-    payload: input,
+    type: "start_fetching",
   };
 }
 
-export function deleteTodo(id) {
+function successGetTodo(data) {
   return {
-    type: "delete_todo",
+    type: "success_get_todo",
+    payload: data,
+  };
+}
+
+function deleteTodoSuccess(id) {
+  return {
+    type: "delete_todo_success",
     payload: id,
+  };
+}
+
+export const addTodo = (newTodo) => async (dispatch) => {
+  dispatch(startFetching());
+
+  await axios.post(
+    "https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list",
+    newTodo
+  );
+
+  dispatch(getTodo());
+}
+
+export const deleteTodo = (data) => async (dispatch) => {
+  dispatch(startFetching());
+
+  await axios.delete(
+    `https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list/${data}`
+  );
+  dispatch(deleteTodoSuccess(data));
+  dispatch(getTodo());
+}
+
+export function getTodo() {
+  return async function (dispatch) {
+    dispatch(startFetching());
+
+    const { data } = await axios(
+      "https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list"
+    );
+
+    dispatch(successGetTodo(data));
   };
 }
 
