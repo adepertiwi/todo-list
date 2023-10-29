@@ -29,6 +29,18 @@ function todoReducer(state = initialValue, action) {
         isLoading: false,
         todos: action.payload,
       };
+    case "update_todo_success":
+      const updatedTodos = state.todos.map((todo) => {
+        if (todo.id === action.payload.id) {
+          return { ...todo, value: action.payload.value, checked: action.payload.checked };
+        }
+        return todo;
+      });
+      return {
+        ...state,
+        todos: updatedTodos,
+      };
+
     default:
       return state;
   }
@@ -63,7 +75,7 @@ export const addTodo = (newTodo) => async (dispatch) => {
   );
 
   dispatch(getTodo());
-}
+};
 
 export const deleteTodo = (data) => async (dispatch) => {
   dispatch(startFetching());
@@ -73,7 +85,7 @@ export const deleteTodo = (data) => async (dispatch) => {
   );
   dispatch(deleteTodoSuccess(data));
   dispatch(getTodo());
-}
+};
 
 export function getTodo() {
   return async function (dispatch) {
@@ -84,6 +96,25 @@ export function getTodo() {
     );
 
     dispatch(successGetTodo(data));
+  };
+}
+
+export const updateTodo = (id, value, checked) => async (dispatch) => {
+  dispatch(startFetching());
+
+  await axios.put(
+    `https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list/${id}`,
+    { value, checked }
+  );
+
+  dispatch(updateTodoSuccess(id, value, checked));
+  dispatch(getTodo());
+};
+
+export function updateTodoSuccess(id, value) {
+  return {
+    type: "update_todo_success",
+    payload: { id, value },
   };
 }
 
