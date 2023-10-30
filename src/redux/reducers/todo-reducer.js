@@ -4,6 +4,7 @@ const initialValue = {
   todos: [],
   isLoading: false,
   error: "",
+  activeFilter: "all",
 };
 
 function todoReducer(state = initialValue, action) {
@@ -44,8 +45,8 @@ function todoReducer(state = initialValue, action) {
         ...state,
         todos: updatedTodos,
       };
-      
-      case "set_filter": 
+
+    case "set_filter":
       return {
         ...state,
         activeFilter: action.payload,
@@ -97,15 +98,26 @@ export const deleteTodo = (data) => async (dispatch) => {
   dispatch(getTodo());
 };
 
-export function getTodo(activeFilter) {
+export function getTodo() {
+  return async function (dispatch) {
+    dispatch(startFetching());
+
+    const { data } = await axios("https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list");
+
+    dispatch(successGetTodo(data));
+  };
+}
+
+export function filterTodoList(filter) {
   return async function (dispatch) {
     dispatch(startFetching());
 
     let url = `https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list`;
-    if (activeFilter === "active") {
-      url += "?checked=false";
-    } else if (activeFilter === "completed") {
-      url += "?checked=true";
+
+    if (filter === "active") {
+      url = `https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list?checked=false`;
+    } else if (filter === "completed") {
+      url = `https://6524bf64ea560a22a4ea0eb2.mockapi.io/todo-list?checked=true`;
     }
 
     const { data } = await axios(url);
@@ -113,6 +125,7 @@ export function getTodo(activeFilter) {
     dispatch(successGetTodo(data));
   };
 }
+
 
 export const updateTodo = (id, value, checked) => async (dispatch) => {
   dispatch(startFetching());
@@ -126,10 +139,10 @@ export const updateTodo = (id, value, checked) => async (dispatch) => {
   dispatch(getTodo());
 };
 
-export function updateTodoSuccess(id, value) {
+export function updateTodoSuccess(id, value, checked) {
   return {
     type: "update_todo_success",
-    payload: { id, value },
+    payload: { id, value, checked },
   };
 }
 

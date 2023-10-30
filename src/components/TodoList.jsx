@@ -13,11 +13,11 @@ function TodoList() {
   const [editId, setEditId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [activeFilter, setActiveFilter] = useState("all");
+  // const [activeFilter, setActiveFilter] = useState("all");
 
   useEffect(() => {
-    dispatch(getTodo(activeFilter));
-  }, [activeFilter]);
+    dispatch(getTodo());
+  }, [dispatch]);
 
   const handleDelete = (id) => {
     dispatch(deleteTodo(id));
@@ -37,11 +37,12 @@ function TodoList() {
   };
 
   const handleToggleCheck = (id, value, checked) => {
-    const newChecked = !checked;
-    dispatch(updateTodo(id, value, newChecked));
+    dispatch(updateTodo(id, value, checked));
   };
-
+  
   return (
+    <div className="grid grid-cols-6 mb-2">
+      <div className="col-start-2 col-span-4">
     <div>
       {isLoading ? (
         <div className="text-l text-gray-600">loading...</div>
@@ -49,36 +50,36 @@ function TodoList() {
         todos.map((todo) => (
           <div
             key={todo.id}
-            className="w-1/2 mb-2 p-2 bg-white rounded-lg shadow-sm"
+            className="w-full mb-2 p-2 bg-white rounded-lg shadow-sm text-black"
           >
             {editId === todo.id ? (
-              <div className="flex items-center space-x-2">
+              <div className="flex space-x-2">
                 <input
-                  className="w-full p-2 border rounded-lg shadow-sm focus:outline-none focus:border-blue-300"
+                  className="w-full p-2 border rounded-lg bg-gray-300 focus:outline-none focus:border-blue-300 "
                   type="text"
                   value={editValue}
                   onChange={(e) => setEditValue(e.target.value)}
                 />
                 <button
-                  className="px-3 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 focus:outline-none"
+                  className="px-3 py-2 text-white bg-gray-400 rounded-lg hover:bg-gray-500 focus:outline-none"
                   onClick={() => handleSaveEdit(todo.id)}
                 >
-                  ✅
+                  ✔️
                 </button>
               </div>
             ) : (
-              <div className="flex space-x-4">
+              <div className="flex px-2 space-x-4">
                 <input
                 className="flex-none"
                   type="checkbox"
                   checked={todo.checked}
                   onChange={() =>
-                    handleToggleCheck(todo.id, todo.value, todo.checked)
+                    handleToggleCheck(todo.id, todo.value, !todo.checked)
                   }
                 />
                 <span
                   className={`flex-1 w-100 text-lg ${
-                    todo.status ? "line-through text-gray-400" : ""
+                    todo.checked ? "line-through text-gray-400" : ""
                   }`}
                 >
                   {todo.value}
@@ -86,13 +87,13 @@ function TodoList() {
                 {!isEditing && (
                   <div className="flex-none space-x-2">
                     <button
-                      className="text-blue-500 hover:underline focus:outline-none"
+                      className="px-1 py-1 tex-white bg-white rounded-lg hover:bg-gray-200 focus:outline-none"
                       onClick={() => handleEdit(todo.id, todo.value)}
                     >
                       ✏️
                     </button>
                     <button
-                      className="text-red-500 hover:underline focus:outline-none"
+                      className="px-1 py-1 tex-white bg-white rounded-lg hover:bg-gray-200 focus:outline-none"
                       onClick={() => handleDelete(todo.id)}
                     >
                       ❌
@@ -104,6 +105,8 @@ function TodoList() {
           </div>
         ))
       )}
+    </div>
+    </div>
     </div>
   );
 }

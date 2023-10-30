@@ -8,7 +8,9 @@ function App() {
 
   return (
     <div className="justify-center items-centre">
-      <h1 className="mb-6 font-bold text-2xl">What's the plan for today?</h1>
+      <div className="text-center">
+        <h1 className="mt-10 mb-10 font-bold text-4xl">What's the plan for today?</h1>
+      </div>
       <InputTodo />
       <FilterTodo />
       <TodoList activeFilter={activeFilter} />
@@ -16,4 +18,4 @@ function App() {
   );
 }
 
-export default App
+export default App;
